@@ -1,7 +1,7 @@
 const express = require('express');
 
 const RotasPublicas = require('./api/routes/RotasPublicas');
-//const RotasPrivadas = require('./api/routes/RotasPrivadas');
+const RotasPrivadas = require('./api/routes/RotasPrivadas');
 
 const host = 'localhost';
 const port = 3000;
@@ -19,7 +19,7 @@ app.get('/', (request, response) => {
 app.use(RotasPublicas);
 
 // Rotas privadas
-//app.use(RotasPrivadas);
+app.use(RotasPrivadas);
 
 app.listen(port, host, () => {
   console.log(`Servidor executando em http://${host}:${port}`);
