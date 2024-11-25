@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+const mysql = require('mysql2'); // Importando o mysql2 corretamente
 
 const connection = new Sequelize({
   dialect: 'mysql',
