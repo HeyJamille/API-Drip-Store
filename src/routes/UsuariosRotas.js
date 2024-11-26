@@ -11,3 +11,4 @@ UsuariosRotas.delete('/usuarios/:id', usuarioController.deletar)
 UsuariosRotas.put('/usuarios/:id', usuarioController.atualizar)
 
 module.exports = UsuariosRotas;
+
