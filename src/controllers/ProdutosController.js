@@ -1,89 +1,129 @@
-const MD5 = require('crypto-js/md5');
-const ProdutosModel = require('../models/ProdutosModel');
+const supabase = require('../database/supabaseClient');  // Importa o cliente do Supabase
 
 class ProdutosController {
-  // Listar Produtos com suporte a filtros e paginação
+  // Listar todos os produtos
   async listar(request, response) {
     try {
-      const { limit = 12, page = 1, fields, use_in_menu } = request.query;
+      const { data: produtos, error } = await supabase
+        .from('Produtos')
+        .select('*');
 
-      const itensPorPagina = parseInt(limit) === -1 ? null : parseInt(limit);
-      const paginaAtual = parseInt(page);
-      const offset = itensPorPagina ? (paginaAtual - 1) * itensPorPagina : null;
-      const atributos = fields ? fields.split(',') : null;
-
-      // Filtros opcionais
-      const filtros = {};
-      if (use_in_menu) {
-        filtros.use_in_menu = use_in_menu === 'true';
+      if (error) {
+        throw error;
       }
 
-      // Realiza a busca no banco de dados usando Sequelize
-      const Produtos = await ProdutosModel.findAll({
-        where: filtros,
-        limit: itensPorPagina,
-        offset: offset,
-        attributes: atributos,
-      });
-
-      return response.json(Produtos);
+      return response.json(produtos);  // Retorna os dados dos produtos
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao buscar Produtos', error });
+      return response.status(500).json({ message: 'Erro ao buscar produtos', error: error.message });
     }
   }
 
-  // Criar uma novo Produto
+  // Criar um novo Produto
   async criar(request, response) {
     try {
-      const body = request.body;
-      const novoProduto = await ProdutosModel.create(body);
+      const { enabled, name, slug, use_in_menu, stock, description, price, price_with_discount } = request.body;
+  
+      console.log( enabled, name, slug, use_in_menu, stock, description, price, price_with_discount )
 
+      if (!enabled || !name || !slug || !use_in_menu || !stock || !description || !price || !price_with_discount) {
+        return response.status(400).json({
+          message: "Todos os campos (enabled, name, slug, use_in_menu, stock, description, price, price_with_discount) são obrigatórios.",
+        });
+      }
+  
+      // Insere os dados no banco
+      const { data, error } = await supabase
+        .from('Produtos')
+        .insert([{
+          enabled, 
+          name, 
+          slug, 
+          use_in_menu, 
+          stock, 
+          description, 
+          price, 
+          price_with_discount 
+        }])
+        .select('*'); // Retorna os dados inseridos
+  
+      if (error) {
+        throw error;
+      }
+  
       return response.status(201).json({
-        message: "Produto criada com sucesso",
-        data: novoProduto
+        message: "Produto cadastrado com sucesso",
+        data: data[0], // Retorna o Produto criado
       });
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao criar Produto', error });
+      return response.status(500).json({
+        message: 'Erro ao cadastrar Produto',
+        error: error.message,
+      });
     }
   }
-
-  // Atualizar uma Produto existente
+  
+  // Atualizar um Produto
   async atualizar(request, response) {
     try {
       const id = request.params.id;
       const body = request.body;
-      const Produto = await ProdutosModel.findByPk(id);
 
-      if (!Produto) {
-        return response.status(404).json({ message: 'Produto não encontrada' });
+      const { data, error } = await supabase
+        .from('Produtos')
+        .update(body)
+        .eq('id', id)
+        .select('*'); // Retorna os dados atualizados
+  
+      if (error) {
+        throw error;
       }
-
-      await Produto.update(body);
+  
+      if (!data || data.length === 0) {
+        return response.status(404).json({ message: "Produto não encontrado" });
+      }
+  
       return response.json({
-        message: "Produto atualizada com sucesso",
-        data: Produto
+        message: "Produto atualizado com sucesso",
+        data: data[0], // Retorna o Produto atualizado
       });
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao atualizar Produto', error });
+      return response.status(500).json({
+        message: 'Erro ao atualizar Produto',
+        error: error.message,
+      });
     }
   }
-
-  // Deletar uma Produto
+  
+  // Deletar um Produto
   async deletar(request, response) {
     try {
       const id = request.params.id;
-      const Produto = await ProdutosModel.findByPk(id);
-
-      if (!Produto) {
-        return response.status(404).json({ message: 'Produto não encontrada' });
+  
+      const { data, error } = await supabase
+        .from('Produtos')
+        .delete()
+        .eq('id', id)
+        .select('*'); // Retorna os dados deletados
+  
+      if (error) {
+        throw error;
       }
-
-      await Produto.destroy();
-      return response.json({ message: "Produto removida com sucesso" });
+  
+      if (!data || data.length === 0) {
+        return response.status(404).json({ message: "Produto não encontrado" });
+      }
+  
+      return response.json({
+        message: "Produto removido com sucesso",
+        data: data[0], // Retorna o Produto removido
+      });
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao deletar Produto', error });
+      return response.status(500).json({
+        message: 'Erro ao remover Produto',
+        error: error.message,
+      });
     }
-  }
+  }  
 }
 
 module.exports = ProdutosController;
