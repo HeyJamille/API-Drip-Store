@@ -1,4 +1,4 @@
-const MD5 = require('crypto-js/md5');
+const bcrypt = require('bcrypt');
 const supabase = require('../database/supabaseClient');  // Importa o cliente do Supabase
 
 class UsuariosController {
@@ -6,7 +6,7 @@ class UsuariosController {
   async listar(request, response) {
     try {
       const { data: usuarios, error } = await supabase
-        .from('Usuarios')
+        .from('usuarios')
         .select('*');
 
       if (error) {
@@ -23,19 +23,20 @@ class UsuariosController {
   async criar(request, response) {
     try {
       const { firstname, surname, email, password } = request.body;
-  
+
+      // Validação de campos obrigatórios
       if (!firstname || !surname || !email || !password) {
         return response.status(400).json({
           message: "Todos os campos (firstname, surname, email, password) são obrigatórios",
         });
       }
-  
-      // Criptografa a senha usando MD5 (substituir por bcrypt seria mais seguro)
-      const hashedPassword = MD5(password).toString();
-  
-      // Insere os dados no banco
+
+      // Criptografa a senha com bcrypt
+      const hashedPassword = await bcrypt.hash(password, 10); // '10' é o número de saltos para aumentar a segurança
+
+      // Insere os dados no Supabase
       const { data, error } = await supabase
-        .from('Usuarios')
+        .from('usuarios')
         .insert([{
           firstname,
           surname,
@@ -43,23 +44,25 @@ class UsuariosController {
           password: hashedPassword, // Usa a senha criptografada
         }])
         .select('*'); // Retorna os dados inseridos
-  
+
       if (error) {
         throw error;
       }
-  
+
+      // Retorna a resposta de sucesso com o usuário criado
       return response.status(201).json({
         message: "Usuário cadastrado com sucesso",
         data: data[0], // Retorna o usuário criado
       });
     } catch (error) {
+      // Retorna erro caso algo dê errado
       return response.status(500).json({
         message: 'Erro ao cadastrar usuário',
         error: error.message,
       });
     }
   }
-  
+
   // Atualizar um usuário
   async atualizar(request, response) {
     try {
@@ -67,7 +70,7 @@ class UsuariosController {
       const body = request.body;
   
       const { data, error } = await supabase
-        .from('Usuarios')
+        .from('usuarios')
         .update(body)
         .eq('id', id)
         .select('*'); // Retorna os dados atualizados
@@ -98,7 +101,7 @@ class UsuariosController {
       const id = request.params.id;
   
       const { data, error } = await supabase
-        .from('Usuarios')
+        .from('usuarios')
         .delete()
         .eq('id', id)
         .select('*'); // Retorna os dados deletados

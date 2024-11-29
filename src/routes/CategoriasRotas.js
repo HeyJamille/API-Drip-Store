@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const CategoriasController = require('../controllers/CategoriasController'); // Corrigido
 const CategoriasRotas = express.Router();
 
@@ -11,3 +11,4 @@ CategoriasRotas.delete('/categorias/:id', categoriasController.deletar);
 CategoriasRotas.put('/categorias/:id', categoriasController.atualizar);
 
 module.exports = CategoriasRotas;
+*/

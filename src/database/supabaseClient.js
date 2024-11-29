@@ -1,13 +1,10 @@
-require('dotenv').config(); // Certifique-se de que isso está no topo do arquivo!
-
+// Importa o cliente do Supabase
 const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 
-const supabaseUrl = process.env.SUPABASE_URL; // Obtém a URL do Supabase
-const supabaseKey = process.env.SUPABASE_KEY; // Obtém a chave de API
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('SUPABASE_URL e SUPABASE_KEY são obrigatórios!');
-}
+// Configuração do Supabase
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

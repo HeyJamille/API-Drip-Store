@@ -2,8 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const UsuariosRotas = require('./UsuariosRotas');
-const CategoriasRotas = require('./CategoriasRotas');
-const ProdutosRotas = require('./ProdutosRotas');
+//const CategoriasRotas = require('./CategoriasRotas');
+//const ProdutosRotas = require('./ProdutosRotas');
 
 const RotasPrivadas = express.Router();
 
@@ -35,7 +35,7 @@ RotasPrivadas.use((request, response, next) => {
 
 // Definindo as rotas privadas
 RotasPrivadas.use(UsuariosRotas);  // Rota de usuários
-RotasPrivadas.use(CategoriasRotas); // Rota de categorias
-RotasPrivadas.use(ProdutosRotas); // Rota de produtos
+//RotasPrivadas.use(CategoriasRotas); // Rota de categorias
+//RotasPrivadas.use(ProdutosRotas); // Rota de produtos
 
 module.exports = RotasPrivadas; // Exporta as rotas privadas

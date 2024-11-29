@@ -1,4 +1,4 @@
-const { DataTypes, Model } = require('sequelize'); // Importando Model junto com DataTypes
+/*const { DataTypes, Model } = require('sequelize'); // Importando Model junto com DataTypes
 const connection = require('../database/connection');
 
 class ProdutosModel extends Model {}
@@ -50,3 +50,4 @@ ProdutosModel.init({
 });
 
 module.exports = ProdutosModel;
+*/

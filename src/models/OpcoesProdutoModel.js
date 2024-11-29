@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+/*const { DataTypes } = require('sequelize');
 const connection = require('../database/connection');
 
 OpcoesProdutoModel.init ({
@@ -41,3 +41,4 @@ OpcoesProdutoModel.init ({
   sequelize: connection,
   tableName: "OpcoesProduto"
 })
+  */

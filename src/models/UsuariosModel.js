@@ -1,42 +1,28 @@
-const { DataTypes, Model } = require('sequelize');
-const connection = require('../database/connection');
+const pool = require('../database/connection'); // Certifique-se de que a conexão está configurada corretamente.
 
-class UsuariosModel extends Model {}
+const UsuariosModel = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS Usuarios (
+      id SERIAL PRIMARY KEY, -- SERIAL para autoincremento no PostgreSQL
+      firstname VARCHAR(30) NOT NULL,
+      surname VARCHAR(30) NOT NULL,
+      email VARCHAR(100) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+  `;
 
-UsuariosModel.init(
-  {
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,  // Define como chave primária
-      autoIncrement: true,  // Auto incremento para o ID
-    },
-    firstname: {
-      type: DataTypes.STRING(40),
-      allowNull: false,
-    },
-    surname: {
-      type: DataTypes.STRING(40),
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true,  // Garante que o email seja único
-      validate: {
-        isEmail: true,  // Validação de formato de email
-      },
-    },
-    password: {
-      type: DataTypes.STRING(255), // Tamanho aumentado para suportar hashes
-      allowNull: false,
-    },
-  },
-  {
-    sequelize: connection,
-    tableName: 'Usuarios',
-    timestamps: true,  // Cria automaticamente as colunas `createdAt` e `updatedAt`
+  /*
+  try {
+    const client = await pool.connect(); // Conecta ao banco de dados
+    await client.query(query); // Executa o comando SQL
+    console.log('Tabela "Usuarios" criada com sucesso!');
+    client.release(); // Libera a conexão
+  } catch (error) {
+    console.error('Erro ao criar tabela:', error.message || error);
   }
-);
+  */
+};
 
-module.exports = UsuariosModel;
+UsuariosModel();
