@@ -7,7 +7,7 @@ class ProdutosController {
       const { data: produtos, error } = await supabase
         .from('Produtos')
         .select('*');
-
+a
       if (error) {
         throw error;
       }
@@ -22,17 +22,9 @@ class ProdutosController {
   async criar(request, response) {
     try {
       const { enabled, name, slug, use_in_menu, stock, description, price, price_with_discount } = request.body;
-  
-      console.log( enabled, name, slug, use_in_menu, stock, description, price, price_with_discount )
-
-      if (!enabled || !name || !slug || !use_in_menu || !stock || !description || !price || !price_with_discount) {
-        return response.status(400).json({
-          message: "Todos os campos (enabled, name, slug, use_in_menu, stock, description, price, price_with_discount) são obrigatórios.",
-        });
-      }
-  
+        
       // Insere os dados no banco
-      const { data, error } = await supabase
+      const { data: produtos, error } = await supabase
         .from('Produtos')
         .insert([{
           enabled, 
@@ -45,14 +37,14 @@ class ProdutosController {
           price_with_discount 
         }])
         .select('*'); // Retorna os dados inseridos
-  
+    
       if (error) {
         throw error;
       }
-  
+    
       return response.status(201).json({
         message: "Produto cadastrado com sucesso",
-        data: data[0], // Retorna o Produto criado
+        data: produtos[0], // Retorna o Produto criado
       });
     } catch (error) {
       return response.status(500).json({

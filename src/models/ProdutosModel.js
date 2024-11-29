@@ -1,53 +1,32 @@
-/*const { DataTypes, Model } = require('sequelize'); // Importando Model junto com DataTypes
-const connection = require('../database/connection');
+const pool = require('../database/connection'); // Certifique-se de que a conexão está configurada corretamente.
 
-class ProdutosModel extends Model {}
+const ProdutosModel = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS Produtos (
+      id SERIAL PRIMARY KEY, -- SERIAL para autoincremento no PostgreSQL
+      enabled BOOLEAN,
+      name VARCHAR(100) NOT NULL,
+      slug VARCHAR(100) NOT NULL UNIQUE,
+      use_in_menu  BOOLEAN,
+      stock INTEGER,
+      description VARCHAR(100),
+      price FLOAT NOT NULL,
+      price_with_discount FLOAT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+  `;
 
-ProdutosModel.init({
-  produto_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,  // Define como chave primária
-    autoIncrement: true,  // Auto incremento para o ID
-  },
-  enabled: {
-    type: DataTypes.BOOLEAN,
-    allowNull: true,
-    defaultValue: 0,
-  },
-  name: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
-  },
-  slug: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-  },
-  use_in_menu: {
-    type: DataTypes.BOOLEAN,
-    allowNull: true,
-    defaultValue: 0,
-  },
-  stock: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  description: {
-    type: DataTypes.STRING(255), // Ajustado para 255, pois "50" pode ser curto para descrições
-    allowNull: true,
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-  price_with_discount: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
+  /*
+  try {
+    const client = await pool.connect(); // Conecta ao banco de dados
+    await client.query(query); // Executa o comando SQL
+    console.log('Tabela "Usuarios" criada com sucesso!');
+    client.release(); // Libera a conexão
+  } catch (error) {
+    console.error('Erro ao criar tabela:', error.message || error);
   }
-}, {
-  sequelize: connection,
-  tableName: 'Produtos',  // Nome da tabela no banco de dados
-  timestamps: true,     
-});
+  */
+};
 
-module.exports = ProdutosModel;
-*/
+ProdutosModel();

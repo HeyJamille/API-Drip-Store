@@ -1,5 +1,5 @@
-/*const express = require('express');
-const ProdutosController = require('../controllers/ProdutosController'); // Corrigido
+const express = require('express');
+const ProdutosController = require('../controllers/ProdutosController'); 
 const ProdutosRotas = express.Router();
 
 const produtosController = new ProdutosController();
@@ -11,4 +11,3 @@ ProdutosRotas.delete('/produtos/:id', produtosController.deletar);
 ProdutosRotas.put('/produtos/:id', produtosController.atualizar);
 
 module.exports = ProdutosRotas;
-*/
