@@ -1,0 +1,74 @@
+##ROTAS
+
+### Rota Inicial
+  /
+
+### Login
+  - Acessar sua conta e conseguir token
+  /login
+
+### Usuários
+  - Listar usuários
+  /usuarios
+
+  - Adicionar usuários
+  /usuarios
+
+  - Deletar usuários
+  /usuarios/:id
+
+  - Atualizar usuários
+  /usuarios/:id
+
+
+### Produtos
+  - Listar categorias 
+  /categorias
+
+  - Adicionar categoria
+  /categorias
+
+  - Deletar categoria
+  /categorias/:id
+
+  - Atualizar categoria
+  /categorias/:id
+
+### Categorias
+  - Listar categorias 
+  /categorias
+
+  - Adicionar categoria
+  /categorias
+
+  - Deletar categoria
+  /categorias/:id
+
+  - Atualizar categoria
+  /categorias/:id
+
+### Opções de Produtos
+  - Listar opçoes de produtos  
+  /opcoesprodutos
+
+  - Adicionar opçoes de produtos
+  /opcoesprodutos
+
+  - Deletar opçoes de produtos
+  /opcoesprodutos/:id
+
+  - Atualizar opçoes de produtos
+  /opcoesprodutos/:id
+
+### Imagens de Produtos
+  - Listar imagens de produtos 
+  /imagensproduto
+
+  - Adicionar imagens de produtos 
+  /imagensproduto
+
+  - Deletar imagens de produtos 
+  /imagensproduto/:id
+
+  - Atualizar imagens de produtos 
+  /imagensproduto/:id
