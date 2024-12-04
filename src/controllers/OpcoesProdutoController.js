@@ -1,44 +1,38 @@
 const supabase = require('../database/supabaseClient');  // Importa o cliente do Supabase
 
-class ProdutosController {
-  // Listar todos os produtos
+class OpcoesProdutosController {
+  // Listar todos as opções de produto
   async listar(request, response) {
     try {
       const { data: produtos, error } = await supabase
-        .from('produtos')
-        .select(`
-          *, 
-          opcoesproduto(*),
-          imagensproduto(*) -- Obtém as imagens relacionadas ao produto
-        `); 
-    
+        .from('opcoesproduto')
+        .select('*'); 
+  
       if (error) {
         throw error;
       }
 
-      return response.json(produtos);  // Retorna os dados dos produtos
+      return response.json(produtos);  // Retorna os dados
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao buscar produtos', error: error.message });
+      return response.status(500).json({ message: 'Erro ao buscar opções de produtos', error: error.message });
     }
   }
 
   // Criar um novo Produto
   async criar(request, response) {
     try {
-      const { enabled, name, slug, use_in_menu, stock, description, price, price_with_discount } = request.body;
+      const { product_id, title, shape, radius, type, values } = request.body;
         
       // Insere os dados no banco
-      const { data: produtos, error } = await supabase
-        .from('produtos')
+      const { data: opcoesproduto, error } = await supabase
+        .from('opcoesproduto')
         .insert([{
-          enabled, 
-          name, 
-          slug, 
-          use_in_menu, 
-          stock, 
-          description, 
-          price, 
-          price_with_discount 
+          product_id, 
+          title, 
+          shape, 
+          radius, 
+          type, 
+          values
         }])
         .select('*'); // Retorna os dados inseridos
     
@@ -47,12 +41,12 @@ class ProdutosController {
       }
     
       return response.status(201).json({
-        message: "Produto cadastrado com sucesso",
-        data: produtos[0], // Retorna o Produto criado
+        message: "Opção de produto cadastrada com sucesso",
+        data: opcoesproduto[0], // Retorna a opção de produto criada 
       });
     } catch (error) {
       return response.status(500).json({
-        message: 'Erro ao cadastrar Produto',
+        message: 'Erro ao cadastrar opção de produto',
         error: error.message,
       });
     }
@@ -65,7 +59,7 @@ class ProdutosController {
       const body = request.body;
 
       const { data, error } = await supabase
-        .from('produtos')
+        .from('opcoesproduto')
         .update(body)
         .eq('id', id)
         .select('*'); // Retorna os dados atualizados
@@ -75,16 +69,16 @@ class ProdutosController {
       }
   
       if (!data || data.length === 0) {
-        return response.status(404).json({ message: "Produto não encontrado" });
+        return response.status(404).json({ message: "Opção de produto não encontrada" });
       }
   
       return response.json({
-        message: "Produto atualizado com sucesso",
+        message: "Opção de produto atualizada com sucesso",
         data: data[0], // Retorna o Produto atualizado
       });
     } catch (error) {
       return response.status(500).json({
-        message: 'Erro ao atualizar Produto',
+        message: 'Erro ao atualizar opção de produto ',
         error: error.message,
       });
     }
@@ -96,7 +90,7 @@ class ProdutosController {
       const id = request.params.id;
   
       const { data, error } = await supabase
-        .from('produtos')
+        .from('opcoesproduto')
         .delete()
         .eq('id', id)
         .select('*'); // Retorna os dados deletados
@@ -106,20 +100,20 @@ class ProdutosController {
       }
   
       if (!data || data.length === 0) {
-        return response.status(404).json({ message: "Produto não encontrado" });
+        return response.status(404).json({ message: "Opção de produto não encontrada" });
       }
   
       return response.json({
-        message: "Produto removido com sucesso",
+        message: "Opção de produto removida com sucesso",
         data: data[0], // Retorna o Produto removido
       });
     } catch (error) {
       return response.status(500).json({
-        message: 'Erro ao remover Produto',
+        message: 'Erro ao remover opção de produto ',
         error: error.message,
       });
     }
   }  
 }
 
-module.exports = ProdutosController;
+module.exports = OpcoesProdutosController;

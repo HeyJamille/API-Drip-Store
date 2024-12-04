@@ -1,44 +1,35 @@
 const supabase = require('../database/supabaseClient');  // Importa o cliente do Supabase
 
-class ProdutosController {
-  // Listar todos os produtos
+class ImagensProdutoController {
+  // Listar todos as imagens de produto
   async listar(request, response) {
     try {
-      const { data: produtos, error } = await supabase
-        .from('produtos')
-        .select(`
-          *, 
-          opcoesproduto(*),
-          imagensproduto(*) -- Obtém as imagens relacionadas ao produto
-        `); 
-    
+      const { data: imagensProduto, error } = await supabase
+        .from('imagensproduto')
+        .select('*');
+
       if (error) {
         throw error;
       }
 
-      return response.json(produtos);  // Retorna os dados dos produtos
+      return response.json(imagensProduto);  // Retorna os dados das imagens de produto
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao buscar produtos', error: error.message });
+      return response.status(500).json({ message: 'Erro ao buscar imagensProduto', error: error.message });
     }
   }
 
-  // Criar um novo Produto
+  // Criar uma nova imagens de produto
   async criar(request, response) {
     try {
-      const { enabled, name, slug, use_in_menu, stock, description, price, price_with_discount } = request.body;
+      const { product_id, enabled, path } = request.body;
         
       // Insere os dados no banco
-      const { data: produtos, error } = await supabase
-        .from('produtos')
+      const { data: imagensProduto, error } = await supabase
+        .from('imagensproduto')
         .insert([{
+          product_id, 
           enabled, 
-          name, 
-          slug, 
-          use_in_menu, 
-          stock, 
-          description, 
-          price, 
-          price_with_discount 
+          path
         }])
         .select('*'); // Retorna os dados inseridos
     
@@ -47,12 +38,12 @@ class ProdutosController {
       }
     
       return response.status(201).json({
-        message: "Produto cadastrado com sucesso",
-        data: produtos[0], // Retorna o Produto criado
+        message: "Imagem de produto cadastrada com sucesso",
+        data: imagensProduto[0], // Retorna a imagem de produto criada
       });
     } catch (error) {
       return response.status(500).json({
-        message: 'Erro ao cadastrar Produto',
+        message: 'Erro ao cadastrar imagem de produto',
         error: error.message,
       });
     }
@@ -65,7 +56,7 @@ class ProdutosController {
       const body = request.body;
 
       const { data, error } = await supabase
-        .from('produtos')
+        .from('imagensproduto')
         .update(body)
         .eq('id', id)
         .select('*'); // Retorna os dados atualizados
@@ -75,16 +66,16 @@ class ProdutosController {
       }
   
       if (!data || data.length === 0) {
-        return response.status(404).json({ message: "Produto não encontrado" });
+        return response.status(404).json({ message: "Imagem de produto não encontrada" });
       }
   
       return response.json({
-        message: "Produto atualizado com sucesso",
+        message: "Imagem de produto atualizada com sucesso",
         data: data[0], // Retorna o Produto atualizado
       });
     } catch (error) {
       return response.status(500).json({
-        message: 'Erro ao atualizar Produto',
+        message: 'Erro ao atualizar a Imagem de produto',
         error: error.message,
       });
     }
@@ -96,7 +87,7 @@ class ProdutosController {
       const id = request.params.id;
   
       const { data, error } = await supabase
-        .from('produtos')
+        .from('imagensproduto')
         .delete()
         .eq('id', id)
         .select('*'); // Retorna os dados deletados
@@ -106,20 +97,20 @@ class ProdutosController {
       }
   
       if (!data || data.length === 0) {
-        return response.status(404).json({ message: "Produto não encontrado" });
+        return response.status(404).json({ message: "Imagem de produto não encontrado" });
       }
   
       return response.json({
-        message: "Produto removido com sucesso",
+        message: "Imagem de produto removido com sucesso",
         data: data[0], // Retorna o Produto removido
       });
     } catch (error) {
       return response.status(500).json({
-        message: 'Erro ao remover Produto',
+        message: 'Erro ao remover Imagem de produto',
         error: error.message,
       });
     }
   }  
 }
 
-module.exports = ProdutosController;
+module.exports = ImagensProdutoController;

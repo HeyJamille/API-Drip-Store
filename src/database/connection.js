@@ -11,7 +11,6 @@ const connection = new Pool({
   queueLimit: 0,
 });
 
-/*
 connection.on('connect', () => {
   console.log('Conexão com o banco de dados estabelecida!');
 });
@@ -19,5 +18,5 @@ connection.on('connect', () => {
 connection.on('error', (err) => {
   console.error('Erro na conexão com o banco de dados:', err.message || err);
 });
-*/
+
 module.exports = connection;

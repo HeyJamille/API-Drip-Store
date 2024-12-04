@@ -1,49 +1,51 @@
-const MD5 = require('crypto-js/md5');
-const CategoriasModel = require('../models/CategoriasModel');
+const supabase = require('../database/supabaseClient');  // Importa o cliente do Supabase
 
 class CategoriasController {
-  // Listar categorias com suporte a filtros e paginação
+  // Lista de Categorias
   async listar(request, response) {
     try {
-      const { limit = 12, page = 1, fields, use_in_menu } = request.query;
+      const { data: categoria, error } = await supabase
+        .from('categorias')
+        .select('*');
 
-      const itensPorPagina = parseInt(limit) === -1 ? null : parseInt(limit);
-      const paginaAtual = parseInt(page);
-      const offset = itensPorPagina ? (paginaAtual - 1) * itensPorPagina : null;
-      const atributos = fields ? fields.split(',') : null;
-
-      // Filtros opcionais
-      const filtros = {};
-      if (use_in_menu) {
-        filtros.use_in_menu = use_in_menu === 'true';
+      if (error) {
+        throw error;
       }
 
-      // Realiza a busca no banco de dados usando Sequelize
-      const categorias = await CategoriasModel.findAll({
-        where: filtros,
-        limit: itensPorPagina,
-        offset: offset,
-        attributes: atributos,
-      });
-
-      return response.json(categorias);
+      return response.json(categoria);  // Retorna os dados das categoriaa
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao buscar categorias', error });
+      return response.status(500).json({ message: 'Erro ao buscar categoria', error: error.message });
     }
   }
 
   // Criar uma nova categoria
   async criar(request, response) {
     try {
-      const body = request.body;
-      const novaCategoria = await CategoriasModel.create(body);
-
+      const { name, slug, use_in_menu } = request.body;
+        
+      // Insere os dados no banco
+      const { data: Categorias, error } = await supabase
+        .from('categorias')
+        .insert([{
+          name, 
+          slug, 
+          use_in_menu 
+        }])
+        .select('*'); // Retorna os dados inseridos
+    
+      if (error) {
+        throw error;
+      }
+    
       return response.status(201).json({
-        message: "Categoria criada com sucesso",
-        data: novaCategoria
+        message: "Categoria cadastrada com sucesso",
+        data: Categorias[0], // Retorna o Categoria criado
       });
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao criar categoria', error });
+      return response.status(500).json({
+        message: 'Erro ao cadastrar Categoria',
+        error: error.message,
+      });
     }
   }
 

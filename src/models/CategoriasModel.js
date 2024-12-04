@@ -1,33 +1,24 @@
-/*const { DataTypes, Model } = require('sequelize');
-const connection = require('../database/connection');
+const pool = require('../database/connection'); // Certifique-se de que a conexão está configurada corretamente.
 
-class CategoriasModel extends Model {}
+const CategoriasModel = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS Categorias (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      slug VARCHAR(100) NOT NULL UNIQUE,
+      use_in_menu  BOOLEAN
+    );
+  `;
 
-CategoriasModel.init({
-  categoria_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,          // Define 'categoria_id' como chave primária
-    autoIncrement: true        // Define incremento automático
-  },
-  name: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
-  },
-  slug: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-  },
-  use_in_menu: {
-    type: DataTypes.BOOLEAN,
-    allowNull: true,
-    defaultValue: false,       // Define o valor padrão como 'false'
+  try {
+    const client = await pool.connect(); // Conecta ao banco de dados
+    await client.query(query); // Executa o comando SQL
+    console.log('Tabela "Categorias" criada com sucesso!');
+    client.release(); // Libera a conexão
+  } catch (error) {
+    console.error('Erro ao criar tabela:', error.message || error);
   }
-}, {
-  sequelize: connection,
-  tableName: 'Categorias',      // Nome da tabela no banco de dados
-  timestamps: true             
-});
 
-module.exports = CategoriasModel;
-*/
+};
+
+CategoriasModel();

@@ -1,4 +1,4 @@
-const UsuariosModel = require('../models/UsuariosModel');
+const UsuariosModel = require('../Models/UsuariosModel');
 
 class AuthController {
   async login(email, senhaCriptografada) {

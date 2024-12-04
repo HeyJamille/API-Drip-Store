@@ -1,44 +1,27 @@
-/*const { DataTypes } = require('sequelize');
-const connection = require('../database/connection');
+const pool = require('../database/connection'); // Certifique-se de que a conexão está configurada corretamente.
 
-OpcoesProdutoModel.init ({
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  product_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: ProdutosModel,
-      key: 'id'
-    }
-  },
-  title: {
-    type: DataTypes.STRING('100'),
-    allowNull: true,
-  },
-  shape: {
-    type: DataTypes.ENUM('square', 'circle'),
-    allowNull: true,
-    defaultValue: 'square',  
-  },
-  radius: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    defaultValue: 0,  
-  },
-  type: {
-    type: DataTypes.ENUM('text', 'color'),
-    allowNull: true,
-    defaultValue: 'text', 
-  },
-  values: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-  },
-}, {
-  sequelize: connection,
-  tableName: "OpcoesProduto"
-})
-  */
+const OpcoesProdutoModel = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS OpcoesProduto (
+      id SERIAL PRIMARY KEY, -- SERIAL para autoincremento no PostgreSQL
+      product_id INTEGER NOT NULL,
+      title VARCHAR(100) NOT NULL,
+      shape VARCHAR(50), -- Forma armazenada como string
+      radius INTEGER CHECK (radius >= 0), -- Validação para valores positivos
+      type VARCHAR(50), -- Tipo armazenado como string
+      values VARCHAR(100) NOT NULL,
+      CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES produtos(id) ON DELETE CASCADE
+    );
+  `;
+
+  try {
+    const client = await pool.connect(); // Conecta ao banco de dados
+    await client.query(query); // Executa o comando SQL
+    console.log('Tabela "OpcoesProduto" criada com sucesso!');
+    client.release(); // Libera a conexão
+  } catch (error) {
+    console.error('Erro ao criar tabela:', error.message || error);
+  }
+};
+
+OpcoesProdutoModel();
